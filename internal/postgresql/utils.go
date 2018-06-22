@@ -444,7 +444,7 @@ func ParseBinaryVersion(v string) (int, int, error) {
 		return 0, 0, fmt.Errorf("failed to parse postgres binary version: %q", v)
 	}
 
-	log.Debugw("ParseBinaryVersion with", m[1])
+	log.Debugw("xxxx => ParseBinaryVersion with", "value", m[1])
 	return ParseVersion(m[1])
 }
 
@@ -453,6 +453,7 @@ func ParseVersion(v string) (int, int, error) {
 	if len(parts) < 1 {
 		return 0, 0, fmt.Errorf("bad version: %q", v)
 	}
+	log.Debugw("xxxx => ParseVersion with", "value", parts[0])
 	maj, err := strconv.Atoi(parts[0])
 	if err != nil {
 		return 0, 0, fmt.Errorf("failed to parse major %q: %v", parts[0], err)
