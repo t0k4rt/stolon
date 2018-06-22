@@ -87,18 +87,18 @@ else
 	for cmd in sentinel proxy; do
 		GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go install -installsuffix cgo -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/${cmd}
 		rm -f ${BINDIR}/stolon-${cmd}
-		cp ${GOPATH}/bin/**/${cmd} ${BINDIR}/stolon-${cmd}
+		cp ${GOPATH}/bin/${cmd} ${BINDIR}/stolon-${cmd}
 	done
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go install -installsuffix cgo -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/stolonctl
 	rm -f ${BINDIR}/stolonctl
-	cp ${GOPATH}/bin/**/stolonctl ${BINDIR}/
+	cp ${GOPATH}/bin/stolonctl ${BINDIR}/
 fi
 
 # stolon-keeper cannot be statically built since it needs to get its current
 # running user and this is not available with cgo disabled
 GOOS=linux GOARCH=amd64 go install -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/keeper
 rm -f ${BINDIR}/stolon-keeper
-cp ${GOPATH}/bin/**/keeper ${BINDIR}/stolon-keeper
+cp ${GOPATH}/bin/keeper ${BINDIR}/stolon-keeper
 
 # Copy binaries to Dockerfile image directories
 declare -a DOCKERFILE_PATHS
