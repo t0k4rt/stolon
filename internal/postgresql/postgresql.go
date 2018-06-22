@@ -581,6 +581,7 @@ func (p *Manager) PGDataVersion() (int, int, error) {
 	scanner.Scan()
 
 	version := scanner.Text()
+	log.Debugw("xxxx => PG_VERSION", "result", version)
 	return ParseVersion(version)
 }
 
