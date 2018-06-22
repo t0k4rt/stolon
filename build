@@ -22,7 +22,8 @@ function readlinkdashf() {
     fi
   )
 }
-
+export GOOS=linux 
+export GOARCH=amd64
 BASEDIR=$(readlinkdashf $(dirname $0))
 BINDIR=${BASEDIR}/bin
 
@@ -79,25 +80,25 @@ if [ -z $use_go_install ]; then
 	echo "or manually rebuild stdlib executing the command 'CGO_ENABLED=0 go install -a -installsuffix cgo std' from a user with write access to ${go_root_dir}/pkg"
 
 	for cmd in sentinel proxy; do
-		CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "$LD_FLAGS" -o ${BINDIR}/stolon-${cmd} ${REPO_PATH}/cmd/${cmd}
+		GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "$LD_FLAGS" -o ${BINDIR}/stolon-${cmd} ${REPO_PATH}/cmd/${cmd}
 	done
-	CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "$LD_FLAGS" -o ${BINDIR}/stolonctl ${REPO_PATH}/cmd/stolonctl
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "$LD_FLAGS" -o ${BINDIR}/stolonctl ${REPO_PATH}/cmd/stolonctl
 else
 	for cmd in sentinel proxy; do
-		CGO_ENABLED=0 go install -installsuffix cgo -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/${cmd}
+		GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go install -installsuffix cgo -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/${cmd}
 		rm -f ${BINDIR}/stolon-${cmd}
-		cp ${GOPATH}/bin/${cmd} ${BINDIR}/stolon-${cmd}
+		cp ${GOPATH}/bin/${GOOS}_${GOARCH}/${cmd} ${BINDIR}/stolon-${cmd}
 	done
-	CGO_ENABLED=0 go install -installsuffix cgo -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/stolonctl
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go install -installsuffix cgo -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/stolonctl
 	rm -f ${BINDIR}/stolonctl
-	cp ${GOPATH}/bin/stolonctl ${BINDIR}/
+	cp ${GOPATH}/bin/${GOOS}_${GOARCH}/stolonctl ${BINDIR}/
 fi
 
 # stolon-keeper cannot be statically built since it needs to get its current
 # running user and this is not available with cgo disabled
-go install -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/keeper
+GOOS=linux GOARCH=amd64 go install -ldflags "$LD_FLAGS" ${REPO_PATH}/cmd/keeper
 rm -f ${BINDIR}/stolon-keeper
-cp ${GOPATH}/bin/keeper ${BINDIR}/stolon-keeper
+cp ${GOPATH}/bin/${GOOS}_${GOARCH}/keeper ${BINDIR}/stolon-keeper
 
 # Copy binaries to Dockerfile image directories
 declare -a DOCKERFILE_PATHS

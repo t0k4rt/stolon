@@ -564,6 +564,7 @@ func (p *Manager) BinaryVersion() (int, int, error) {
 		return 0, 0, fmt.Errorf("error: %v, output: %s", err, string(out))
 	}
 
+	log.Debugw("result cmd", string(out))
 	return ParseBinaryVersion(string(out))
 }
 

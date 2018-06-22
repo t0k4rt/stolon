@@ -443,6 +443,8 @@ func ParseBinaryVersion(v string) (int, int, error) {
 	if len(m) != 2 {
 		return 0, 0, fmt.Errorf("failed to parse postgres binary version: %q", v)
 	}
+
+	log.Debugw("ParseBinaryVersion with", m[1])
 	return ParseVersion(m[1])
 }
 
